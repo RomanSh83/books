@@ -1,0 +1,53 @@
+[project]
+name = "books"
+version = "0.1.0"
+description = "Test project"
+requires-python = ">=3.12"
+dependencies = [
+    "aiofiles>=24.1.0",
+    "alembic>=1.16.5",
+    "asyncpg>=0.30.0",
+    "bcrypt==4.0.1",
+    "dynaconf>=3.2.11",
+    "fastapi-pagination>=0.14.2",
+    "fastapi[standard]>=0.117.1",
+    "passlib>=1.7.4",
+    "pydantic>=2.11.9",
+    "pyjwt>=2.10.1",
+    "redis>=6.4.0",
+]
+
+[dependency-groups]
+lint = [
+    "pre-commit>=4.3.0",
+    "ruff>=0.13.2",
+]
+
+[project.scripts]
+app = "books.runner:run"
+
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"
+
+[tool.ruff]
+lint.select = [
+    "E", # PEP8 ошибки (например, отступы)
+    "F", # Pyflakes (неиспользуемый код)
+    "W", # Предупреждения
+    "I", # Сортировка импортов
+    "UP", # Современный Python (например, Union -> |)
+]
+line-length = 120
+indent-width = 4
+
+[tool.alembic]
+script_location = "%(here)s/src/books/infra/db/alembic"
+file_template = "%%(year)d_%%(month).2d_%%(day).2d_%%(hour).2d%%(minute).2d-%%(rev)s_%%(slug)s"
+prepend_sys_path = ["."]
+
+[[tool.alembic.post_write_hooks]]
+name = "ruff"
+type = "exec"
+executable = "uv"
+options = "run ruff format REVISION_SCRIPT_FILENAME"

@@ -1,0 +1,16 @@
+# Python-generated files
+__pycache__/
+*.py[oc]
+build/
+dist/
+wheels/
+*.egg-info
+.env
+/config/settings.yaml
+
+# Virtual environments
+.venv
+
+# Static files
+media/
+
