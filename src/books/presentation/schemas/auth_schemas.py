@@ -1,30 +1,22 @@
-import re
 import uuid
+from typing import Annotated
 
-from pydantic import BaseModel, EmailStr, field_validator
+from pydantic import BaseModel, EmailStr, Field, model_validator
 
 from books.application.config import get_settings
+from books.presentation.schemas.mixins.auth_mixins_schemas import (
+    PasswordRegexValidationMixin,
+)
+
 
 class UserBaseSchema(BaseModel):
-    username: str
+    username: Annotated[str, Field(min_length=get_settings().AUTH_USERNAME_MIN_LENGTH)]
     email: EmailStr
 
 
-class UserRegisterInSchema(UserBaseSchema):
+class UserRegisterInSchema(PasswordRegexValidationMixin, UserBaseSchema):
     password: str
 
-    @field_validator("password")
-    def validate_password_regex(cls, value: str) -> str:
-        min_length = get_settings().PASSWORD_MIN_LENGTH
-        max_length = get_settings().PASSWORD_MAX_LENGTH
-        match_conditions = r"(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[`\-~!@#$%^&*()=_+\[\]{};:'\"\\|<>/?№.,])"
-        allowed_characters = r"[\w`\-~!@#$%^&*()=+\[\]{};:'\"\\|<>/?№.,]"
-        length_conditions = "{" + str(min_length) + "," + str(max_length) + "}"
-        if not re.fullmatch(pattern=f"^{match_conditions}{allowed_characters}{length_conditions}$", string=value):
-            raise ValueError(
-                f"Password must be between {min_length} and {max_length} characters long and meet complexity requirements."
-            )
-        return value
 
 class UserReturnSchema(UserBaseSchema):
     uid: uuid.UUID
@@ -32,10 +24,18 @@ class UserReturnSchema(UserBaseSchema):
     is_activated: bool
     is_superuser: bool
 
-class UserInSchema(BaseModel):
+
+class UserInSchema(PasswordRegexValidationMixin, BaseModel):
     username: str | None = None
     email: EmailStr | None = None
     password: str
+
+    @model_validator(mode="after")
+    def username_or_email_field_required(cls, model_instance):
+        if all(getattr(model_instance, field) is None for field in ["username", "email"]):
+            raise ValueError("At least one field_required.")
+        return model_instance
+
 
 class TokenSchema(BaseModel):
     token: str

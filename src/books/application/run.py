@@ -1,5 +1,3 @@
-import logging
-
 import uvicorn
 from fastapi import FastAPI
 from fastapi.staticfiles import StaticFiles
@@ -7,8 +5,6 @@ from fastapi.staticfiles import StaticFiles
 from books.application.config import get_settings
 from books.presentation.routers import main_router
 
-from fastapi.responses import HTMLResponse
-from pathlib import Path
 
 def run_app():
     app = FastAPI()

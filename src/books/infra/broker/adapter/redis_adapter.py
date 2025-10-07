@@ -1,7 +1,7 @@
-from contextlib import asynccontextmanager, aclosing
+from contextlib import asynccontextmanager
 
 import redis.asyncio as redis
-from redis.asyncio.connection import Connection, ConnectionPool
+from redis.asyncio.connection import ConnectionPool
 
 from books.application.base.singleton import Singleton
 from books.application.config import get_settings
@@ -23,6 +23,7 @@ class RedisAdapter(Singleton):
             yield client
         finally:
             await client.aclose()
+
 
 def get_broker_adapter() -> RedisAdapter:
     return RedisAdapter()

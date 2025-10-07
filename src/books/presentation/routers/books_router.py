@@ -12,6 +12,7 @@ from books.presentation.di.auth_di import get_current_user
 from books.presentation.di.books_di import get_books_uc, get_current_book
 from books.presentation.permissions.permissions import check_permissions_is_admin
 from books.presentation.routers.comments_router import comments_router
+from books.presentation.routers.rating_router import rating_router
 from books.presentation.schemas.books_schemas import (
     BookReturnSchema,
     BooksFilterAndPaginationMixin,
@@ -21,7 +22,8 @@ from books.presentation.schemas.books_schemas import (
 )
 
 books_router = APIRouter(prefix="/books", tags=["books"])
-books_router.include_router(comments_router, prefix="/comments", tags=["comments"])
+books_router.include_router(comments_router, prefix="/books/{book_id}")
+books_router.include_router(rating_router, prefix="/books/{book_id}")
 
 
 @books_router.get(path="", status_code=status.HTTP_200_OK)

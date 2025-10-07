@@ -1,5 +1,4 @@
 import uuid
-
 from typing import Protocol
 
 from books.domain.entities.user_entities import DomainUser

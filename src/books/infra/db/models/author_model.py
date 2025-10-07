@@ -1,12 +1,15 @@
-import uuid
 from datetime import date
 
-from sqlalchemy import Boolean, String, Date, Text, UniqueConstraint, ForeignKey
+from sqlalchemy import Date, String, Text, UniqueConstraint
 from sqlalchemy.orm import Mapped, mapped_column, relationship
 
 from books.application.config import get_settings
 from books.infra.db.models.base.base_model import BaseModel
-from books.infra.db.models.mixins.model_mixins import UIDMixin, TimestampsMixin, ByStampsMixin
+from books.infra.db.models.mixins.model_mixins import (
+    ByStampsMixin,
+    TimestampsMixin,
+    UIDMixin,
+)
 
 
 class Author(BaseModel, UIDMixin, TimestampsMixin, ByStampsMixin):
@@ -23,4 +26,3 @@ class Author(BaseModel, UIDMixin, TimestampsMixin, ByStampsMixin):
 
     def __repr__(self):
         return f"{self.first_name.title()} {self.last_name.title()}"
-

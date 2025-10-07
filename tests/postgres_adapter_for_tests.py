@@ -1,7 +1,19 @@
+"""
+Тестовый PostgresAdapter.
+"""
+
 from sqlalchemy.ext.asyncio import AsyncSession, async_sessionmaker, create_async_engine
 
-from books.application.base.singleton import Singleton
 from books.application.config import get_settings
+
+
+class Singleton:
+    _instance = None
+
+    def __new__(cls, *args, **kwargs):
+        if cls._instance is None:
+            cls._instance = super().__new__(cls)
+        return cls._instance
 
 
 class PostgresAdapter(Singleton):
@@ -14,5 +26,5 @@ class PostgresAdapter(Singleton):
         return self._session_factory
 
 
-def get_db_adapter() -> PostgresAdapter:
+def get_test_db_adapter() -> PostgresAdapter:
     return PostgresAdapter()

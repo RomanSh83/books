@@ -8,6 +8,6 @@ class DomainUser:
     email: str
     hashed_password: str
     uid: uuid.UUID | None = None
-    is_activated: bool | None = True # for future purposes
-    is_verified: bool | None = True # for future purposes
+    is_activated: bool | None = True  # for future purposes
+    is_verified: bool | None = True  # for future purposes
     is_superuser: bool | None = False

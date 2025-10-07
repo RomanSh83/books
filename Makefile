@@ -1,4 +1,4 @@
-.PHONY: install lint run
+.PHONY: install lint run test
 .DEFAULT_GOAL := list
 
 list: ## Показать список всех команд
@@ -15,9 +15,17 @@ lint: ## Запуск автоматического форматировани�
 run: ## Запуск приложения
 	uv run app
 
-run_all:
-	docker compose -f docker-compose.dev.yaml up -d
+run_all: ## Запуск контейнеров БД и приложения
+	docker compose -f docker-compose.yaml up -d
 	$(MAKE) run
+
+test: ## Запуск тестов
+	ENV_FOR_DYNACONF=test pytest -v
+
+test: ## Запуск контейнеров БД и тестов
+	docker compose -f docker-compose.test.yaml up -d --wait
+	$(MAKE) test
+	docker compose -f docker-compose.test.yaml down
 
 create_migration:
 	@read -p "Введите описание ревизии: " msg; \

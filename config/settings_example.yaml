@@ -31,7 +31,13 @@ default:
   MEDIA_DIR: "media"
 
 dev:
-  # Adapters
+  # Dev Adapters
   REDIS_URL: "redis://localhost:6380"
   REDIS_MAX_CONNECTIONS: 20
   DATABASE_URL: "postgresql+asyncpg://books_user:books_password@127.0.0.1:5433/books_db"
+
+test:
+  # Test Adapters
+  REDIS_URL: "redis://localhost:6381"
+  REDIS_MAX_CONNECTIONS: 20
+  DATABASE_URL: "postgresql+asyncpg://books_user:books_password@127.0.0.1:5434/books_db_test"

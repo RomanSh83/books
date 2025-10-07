@@ -1,7 +1,7 @@
 import uuid
 from dataclasses import asdict
 
-from sqlalchemy import insert, select, and_
+from sqlalchemy import and_, insert, select
 from sqlalchemy.exc import IntegrityError
 
 from books.domain.entities.user_entities import DomainUser
@@ -19,18 +19,24 @@ class AuthDBRepository(AuthDBProtocol):
     async def create_user(self, user: DomainUser) -> DomainUser:
         user_data = asdict(user)
         user_data.pop("uid")
-        query = insert(
-            DBUser
-        ).values(
-            **user_data
-        ).returning(
-            DBUser.uid, DBUser.username, DBUser.email, DBUser.hashed_password, DBUser.is_verified, DBUser.is_superuser, DBUser.is_activated
+        query = (
+            insert(DBUser)
+            .values(**user_data)
+            .returning(
+                DBUser.uid,
+                DBUser.username,
+                DBUser.email,
+                DBUser.hashed_password,
+                DBUser.is_verified,
+                DBUser.is_superuser,
+                DBUser.is_activated,
+            )
         )
         async with self.db_adapter.get_session() as session:
             try:
                 result = await session.execute(query)
                 await session.commit()
-            except IntegrityError as e:
+            except IntegrityError:
                 await session.rollback()
                 raise AlreadyExistsException()
         return DomainUser(**result.mappings().first())
@@ -54,6 +60,7 @@ class AuthDBRepository(AuthDBProtocol):
 
     async def get_user_by_uid(self, user_uid: uuid.UUID) -> DomainUser | None:
         return await self._get_user_by_fields(conditions=[DBUser.uid == user_uid])
+
 
 def get_pg_auth_repository():
     return AuthDBRepository(db_adapter=PostgresAdapter())

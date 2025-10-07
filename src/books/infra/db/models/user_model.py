@@ -2,7 +2,7 @@ from sqlalchemy import Boolean, String
 from sqlalchemy.orm import Mapped, mapped_column
 
 from books.infra.db.models.base.base_model import BaseModel
-from books.infra.db.models.mixins.model_mixins import UIDMixin, TimestampsMixin
+from books.infra.db.models.mixins.model_mixins import TimestampsMixin, UIDMixin
 
 
 class User(BaseModel, UIDMixin, TimestampsMixin):

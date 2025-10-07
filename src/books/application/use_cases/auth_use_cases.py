@@ -1,12 +1,20 @@
 import uuid
 
 from books.domain.entities.user_entities import DomainUser
-from books.domain.exceptions.auth_exceptions import WrongLoginDataException, WrongSessionException, UserNotFoundException
+from books.domain.exceptions.auth_exceptions import (
+    UserNotFoundException,
+    WrongLoginDataException,
+    WrongSessionException,
+)
 from books.domain.protocols.auth.broker_protocols import AuthBrokerProtocol
 from books.domain.protocols.auth.db_protocols import AuthDBProtocol
 from books.domain.protocols.auth.password_protocols import PasswordServiceProtocol
 from books.domain.protocols.auth.token_protocols import TokenServiceProtocol
-from books.presentation.schemas.auth_schemas import UserRegisterInSchema, TokenSchema, UserInSchema
+from books.presentation.schemas.auth_schemas import (
+    TokenSchema,
+    UserInSchema,
+    UserRegisterInSchema,
+)
 
 
 class AuthUseCase:
@@ -15,7 +23,7 @@ class AuthUseCase:
         db: AuthDBProtocol,
         broker: AuthBrokerProtocol,
         password_service: PasswordServiceProtocol,
-        token_service: TokenServiceProtocol
+        token_service: TokenServiceProtocol,
     ):
         self.db = db
         self.broker = broker
@@ -29,9 +37,8 @@ class AuthUseCase:
 
     async def login_user(self, user_data: UserInSchema) -> TokenSchema:
         domain_user = await self.db.get_user_by_login_field(username=user_data.username, email=user_data.email)
-        if (
-            not domain_user
-            or not await self.password_service.verify_password(user_data.password, domain_user.hashed_password)
+        if not domain_user or not await self.password_service.verify_password(
+            user_data.password, domain_user.hashed_password
         ):
             raise WrongLoginDataException
         token = self.token_service.get_token(domain_user)
@@ -47,4 +54,3 @@ class AuthUseCase:
         if not current_user:
             raise UserNotFoundException
         return current_user
-

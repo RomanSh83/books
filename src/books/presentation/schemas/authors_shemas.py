@@ -5,7 +5,7 @@ from typing import Annotated
 from pydantic import BaseModel, Field
 
 from books.application.config import get_settings
-from books.presentation.schemas.mixins_schemas import AtLeastOneFieldMixin
+from books.presentation.schemas.mixins.base_mixins_schemas import AtLeastOneFieldMixin
 
 _name_field = Field(min_length=get_settings().AUTHOR_NAME_MIN_LENGTH, max_length=get_settings().AUTHOR_NAME_MAX_LENGTH)
 _birth_date_field = Field(lt=date.today().replace(year=date.today().year - get_settings().AUTHOR_MIN_AUTHOR_AGE))

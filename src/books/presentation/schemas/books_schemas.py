@@ -5,7 +5,7 @@ from pydantic import BaseModel, Field, field_validator
 
 from books.application.config import get_settings
 from books.domain.entities.author_entities import DomainAuthor
-from books.presentation.schemas.mixins_schemas import (
+from books.presentation.schemas.mixins.base_mixins_schemas import (
     AtLeastOneFieldMixin,
     PaginationOffsetLimitMixin,
 )
