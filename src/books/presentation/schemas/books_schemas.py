@@ -11,13 +11,14 @@ from books.presentation.schemas.mixins.base_mixins_schemas import (
 )
 from books.presentation.validators.books_validators import image_base64_field_validator
 
+_title_field = Field(min_length=get_settings().BOOK_TITLE_MIN_LENGTH, max_length=get_settings().BOOK_TITLE_MAX_LENGTH)
+_published_year_field = Field(ge=get_settings().BOOK_MIN_PUBLISHED_YEAR, le=get_settings().BOOK_MAX_PUBLISHED_YEAR)
+
 
 class BooksBaseSchema(BaseModel):
-    title: Annotated[str, Field(max_length=get_settings().BOOK_TITLE_MAX_LENGTH)]
-    published_year: Annotated[
-        int, Field(ge=get_settings().BOOK_MIN_PUBLISHED_YEAR, le=get_settings().BOOK_MAX_PUBLISHED_YEAR)
-    ]
-    description: str | None = None
+    title: Annotated[str, _title_field]
+    published_year: Annotated[int, _published_year_field]
+    description: str
 
 
 class BooksImageUriSchema:
@@ -29,7 +30,8 @@ class BooksImageUriSchema:
 
 
 class BooksInSchema(BooksBaseSchema, BooksImageUriSchema):
-    author_uid: Annotated[uuid.UUID, Field(alias="author")]
+    model_config = {"extra": "forbid"}
+    author: uuid.UUID
 
 
 class BookReturnSchema(BooksBaseSchema):
@@ -55,9 +57,7 @@ class BooksPaginatedReturnSchema(BaseModel):
 
 
 class BookUpdateSchema(AtLeastOneFieldMixin, BooksImageUriSchema, BaseModel):
-    title: Annotated[str | None, Field(max_length=get_settings().BOOK_TITLE_MAX_LENGTH)] = None
+    title: Annotated[str | None, _title_field] = None
     author_uid: Annotated[uuid.UUID | None, Field(alias="author")] = None
-    published_year: Annotated[
-        int | None, Field(ge=get_settings().BOOK_MIN_PUBLISHED_YEAR, le=get_settings().BOOK_MAX_PUBLISHED_YEAR)
-    ] = None
+    published_year: Annotated[int | None, _published_year_field] = None
     description: str | None = None

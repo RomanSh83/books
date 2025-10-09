@@ -19,6 +19,7 @@ class AuthorBaseSchema(BaseModel):
 
 
 class AuthorInSchema(AuthorBaseSchema):
+    model_config = {"extra": "forbid"}
     pass
 
 

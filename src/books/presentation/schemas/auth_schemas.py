@@ -15,6 +15,7 @@ class UserBaseSchema(BaseModel):
 
 
 class UserRegisterInSchema(PasswordRegexValidationMixin, UserBaseSchema):
+    model_config = {"extra": "forbid"}
     password: str
 
 

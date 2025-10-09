@@ -27,7 +27,7 @@ class BooksUseCase:
 
     async def create_book(self, user: DomainUser, book_data: BooksInSchema) -> DomainBook:
         book_data_dict = book_data.model_dump()
-        author_uid = book_data_dict.pop("author_uid")
+        author_uid = book_data_dict.pop("author")
         author = await self.authors_db.get_author_by_uid(author_uid=author_uid)
         if author is None:
             raise AuthorNotFoundException
@@ -69,7 +69,7 @@ class BooksUseCase:
 
         try:
             await self.books_db.update_book(book=book, update_data=update_data, updated_by=user.uid)
-            if image_uri:
+            if image_uri and book.image:
                 await self.storage.remove_file(filename=self.storage.get_filename_from_url(url=book.image))
         except TitleAuthorConstraintException:
             if domain_image_file:

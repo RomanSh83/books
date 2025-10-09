@@ -29,4 +29,7 @@ class TokenService(TokenServiceProtocol):
             raise TokenExpiredException
         except InvalidTokenError:
             raise InvalidTokenException
-        return jwt.decode(token, key=get_settings().SECRET_KEY, algorithms=["HS256"])
+        payload = jwt.decode(token, key=get_settings().SECRET_KEY, algorithms=["HS256"])
+        if "user_uid" not in payload:
+            raise InvalidTokenException
+        return payload

@@ -20,8 +20,8 @@ class Book(BaseModel, UIDMixin, TimestampsMixin, ByStampsMixin):
     image: Mapped[str] = mapped_column(String(64), nullable=True)
 
     author = relationship("Author", back_populates="books")
-    comments = relationship("Comment", back_populates="book")
-    rating = relationship("Rating", back_populates="book")
+    comments = relationship("Comment", back_populates="book", cascade="all, delete-orphan", passive_deletes=True)
+    rating = relationship("Rating", back_populates="book", cascade="all, delete-orphan", passive_deletes=True)
 
     __table_args__ = (UniqueConstraint("title", "author_uid"),)
 

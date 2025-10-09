@@ -18,7 +18,7 @@ class Author(BaseModel, UIDMixin, TimestampsMixin, ByStampsMixin):
     birth_date: Mapped[date] = mapped_column(Date(), nullable=False)
     bio: Mapped[str] = mapped_column(Text(), nullable=True)
 
-    books = relationship("Book", back_populates="author")
+    books = relationship("Book", back_populates="author", cascade="all, delete-orphan", passive_deletes=True)
 
     __table_args__ = (
         UniqueConstraint("first_name", "last_name", "birth_date", name="uq_first_name_last_name_birth_date"),

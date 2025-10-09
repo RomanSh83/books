@@ -12,6 +12,7 @@ class CommentsBaseSchema(BaseModel):
 
 
 class CommentsInSchema(CommentsBaseSchema):
+    model_config = {"extra": "forbid"}
     pass
 
 

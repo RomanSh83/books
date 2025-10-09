@@ -36,5 +36,6 @@ class ByStampsMixin:
     def updated_by(cls) -> Mapped[uuid.UUID]:
         return mapped_column(
             ForeignKey("user.uid", name=f"fk_{cls.__tablename__}_updated_by_user_uid"),  # type: ignore
-            nullable=False,
+            default=None,
+            nullable=True,
         )
