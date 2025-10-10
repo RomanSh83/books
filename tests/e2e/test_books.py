@@ -2,7 +2,6 @@ import uuid
 from copy import deepcopy
 
 import pytest
-import pytest_asyncio
 from starlette import status
 
 from books.application.config import get_settings
@@ -67,6 +66,7 @@ another_changed_fields = {
 }
 
 invalid_fields = [
+    ("title", ""),
     ("title", "a" * (MIN_LENGTH - 1)),
     ("title", "a" * (MAX_LENGTH + 1)),
     ("published_year", MIN_YEAR - 1),
@@ -78,20 +78,6 @@ invalid_fields = [
 ]
 
 wrong_book_uid = "00000000-0000-0000-0000-000000000000"
-
-
-@pytest_asyncio.fixture
-async def header_with_regular_user_token(test_client, regular_user):
-    response = await test_client.post("/auth/login", json=regular_user)
-    regular_user_token = response.json().get("token")
-    return {"Authorization": f"Bearer {regular_user_token}"}
-
-
-@pytest_asyncio.fixture
-async def header_with_admin_user_token(test_client, admin_user):
-    response = await test_client.post("/auth/login", json=admin_user)
-    admin_user_token = response.json().get("token")
-    return {"Authorization": f"Bearer {admin_user_token}"}
 
 
 # Tests
@@ -392,6 +378,9 @@ async def test_delete_book_by_admin_user_successfully(test_client, header_with_a
     assert response.status_code == status.HTTP_404_NOT_FOUND
 
 
-async def test_delete_author_by_admin_user_wrong_uid(test_client, header_with_admin_user_token):
+async def test_delete_book_by_admin_user_wrong_uid(test_client, header_with_admin_user_token):
     response = await test_client.delete(f"/books/{wrong_book_uid}", headers=header_with_admin_user_token)
     assert response.status_code == status.HTTP_404_NOT_FOUND
+
+
+# TODO тесты на фильтры

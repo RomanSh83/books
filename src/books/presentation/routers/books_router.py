@@ -22,8 +22,8 @@ from books.presentation.schemas.books_schemas import (
 )
 
 books_router = APIRouter(prefix="/books", tags=["books"])
-books_router.include_router(comments_router, prefix="/books/{book_id}")
-books_router.include_router(rating_router, prefix="/books/{book_id}")
+books_router.include_router(comments_router, prefix="/{book_id}")
+books_router.include_router(rating_router, prefix="/{book_id}")
 
 
 @books_router.get(path="", status_code=status.HTTP_200_OK)

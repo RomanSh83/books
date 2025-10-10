@@ -3,7 +3,6 @@ from copy import deepcopy
 from datetime import date
 
 import pytest
-import pytest_asyncio
 from starlette import status
 
 from books.application.config import get_settings
@@ -49,28 +48,18 @@ another_changed_fields = {
 }
 
 invalid_fields = [
+    ("first_name", ""),
     ("first_name", "a" * (MIN_LENGTH - 1)),
     ("first_name", "a" * (MAX_LENGTH + 1)),
+    ("last_name", ""),
     ("last_name", "a" * (MIN_LENGTH - 1)),
     ("last_name", "a" * (MAX_LENGTH + 1)),
+    ("birth_date", ""),
+    ("birth_date", "12 January 1975"),
     ("birth_date", NO_VALID_BIRTH_DATE),
 ]
 
 wrong_author_uid = "00000000-0000-0000-0000-000000000000"
-
-
-@pytest_asyncio.fixture
-async def header_with_regular_user_token(test_client, regular_user):
-    response = await test_client.post("/auth/login", json=regular_user)
-    regular_user_token = response.json().get("token")
-    return {"Authorization": f"Bearer {regular_user_token}"}
-
-
-@pytest_asyncio.fixture
-async def header_with_admin_user_token(test_client, admin_user):
-    response = await test_client.post("/auth/login", json=admin_user)
-    admin_user_token = response.json().get("token")
-    return {"Authorization": f"Bearer {admin_user_token}"}
 
 
 # Tests

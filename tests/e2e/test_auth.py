@@ -23,9 +23,11 @@ invalid_email_strings = [
     "wrong_emaildomain.com",
     "wrong_email@domain.",
     "wrong_email",
+    "",
 ]
 
 invalid_password_strings = [
+    "",  # empty
     "short",  # too short
     "toolongpasswordtoolongpassword_1A",  # too long
     "12345678",  # only num

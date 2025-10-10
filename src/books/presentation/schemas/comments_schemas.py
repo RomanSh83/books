@@ -8,7 +8,9 @@ from books.application.config import get_settings
 
 
 class CommentsBaseSchema(BaseModel):
-    text: Annotated[str, Field(max_length=get_settings().COMMENT_TEXT_MAX_LENGTH)]
+    text: Annotated[
+        str, Field(min_length=get_settings().COMMENT_TEXT_MIN_LENGTH, max_length=get_settings().COMMENT_TEXT_MAX_LENGTH)
+    ]
 
 
 class CommentsInSchema(CommentsBaseSchema):

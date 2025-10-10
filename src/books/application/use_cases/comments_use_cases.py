@@ -19,8 +19,8 @@ class CommentsUseCase:
         domain_comment = DomainComment(**comment_data.model_dump())
         return await self.db.create_comment(comment=domain_comment, created_by=user.uid, book_uid=book.uid)
 
-    async def get_current_comment(self, comment_uid: uuid.UUID) -> DomainComment:
-        current_comment = await self.db.get_comment_by_uid(comment_uid=comment_uid)
+    async def get_current_comment(self, book_uid: uuid.UUID, comment_uid: uuid.UUID) -> DomainComment:
+        current_comment = await self.db.get_books_comment_by_uid(book_uid=book_uid, comment_uid=comment_uid)
         if not current_comment:
             raise CommentNotFoundException
         return current_comment

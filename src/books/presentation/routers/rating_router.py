@@ -9,7 +9,7 @@ from books.domain.entities.user_entities import DomainUser
 from books.presentation.di.auth_di import get_current_user
 from books.presentation.di.books_di import get_current_book
 from books.presentation.di.ratings_di import get_ratings_uc
-from books.presentation.schemas.ratings_schemas import RatingReturnSchema
+from books.presentation.schemas.ratings_schemas import RatingReturnSchema, RatingInSchema
 
 rating_router = APIRouter(prefix="/rating", tags=["rating"])
 
@@ -18,10 +18,10 @@ rating_router = APIRouter(prefix="/rating", tags=["rating"])
 async def rate_book(
     user: Annotated[DomainUser, Depends(get_current_user)],
     book: Annotated[DomainBook, Depends(get_current_book)],
-    points: int,
+    rating: RatingInSchema,
     ratings_uc: Annotated[RatingsUseCase, Depends(get_ratings_uc)],
 ):
-    await ratings_uc.rate_book(user=user, book=book, points=points)
+    await ratings_uc.rate_book(user=user, book=book, points=rating.points)
 
 
 @rating_router.get(path="", response_model=RatingReturnSchema, status_code=status.HTTP_200_OK)

@@ -31,8 +31,9 @@ class CommentsDBRepository(CommentsDBProtocol):
             await session.commit()
         return DomainComment(**result.mappings().first())
 
-    async def get_comment_by_uid(self, comment_uid: uuid.UUID) -> DomainComment | None:
-        query = select(DBComment).where(DBComment.uid == comment_uid)
+    async def get_books_comment_by_uid(self, book_uid: uuid.UUID, comment_uid: uuid.UUID) -> DomainComment | None:
+        query = select(DBComment).where(DBComment.uid == comment_uid, DBComment.book_uid == book_uid)
+        print(comment_uid, book_uid)
         async with self.db_adapter.get_session() as session:
             result = await session.execute(query)
         comment = result.scalar_one_or_none()

@@ -16,6 +16,7 @@ from sqlalchemy import insert
 from books.application.config import get_settings
 from books.infra.db.models.author_model import Author as AuthorModel
 from books.infra.db.models.book_model import Book as BookModel
+from books.infra.db.models.comment_model import Comment as CommentModel
 from books.infra.db.models.user_model import User as UserModel
 from books.presentation.routers import main_router
 from tests.postgres_adapter_for_tests import get_test_db_adapter
@@ -100,6 +101,30 @@ def mutable_book(another_author_uid):
         "author_uid": str(another_author_uid),
         "published_year": 2002,
         "description": "mutable_book_description",
+    }
+
+
+@pytest.fixture(scope="session")
+def comment(book_uid):
+    return {
+        "text": "comment",
+        "book_uid": str(book_uid),
+    }
+
+
+@pytest.fixture(scope="session")
+def another_comment(another_book_uid):
+    return {
+        "text": "another_comment",
+        "book_uid": str(another_book_uid),
+    }
+
+
+@pytest.fixture(scope="session")
+def mutable_comment(another_book_uid):
+    return {
+        "text": "mutable_comment",
+        "book_uid": str(another_book_uid),
     }
 
 
@@ -263,7 +288,35 @@ async def mutable_book_uid(prepare_pg_database, mutable_book, registered_admin_u
     return str(book_uid)
 
 
-# TODO как удалить автора у которого есть книги
+@pytest_asyncio.fixture(scope="session", autouse=True)
+async def comment_uid(prepare_pg_database, comment, registered_regular_user):
+    query = insert(CommentModel).values(**comment, created_by=registered_regular_user).returning(CommentModel.uid)
+    async with TestPostgresAdapter.get_session() as session:
+        comment_uid = await session.scalar(query)
+        await session.commit()
+    return str(comment_uid)
+
+
+@pytest_asyncio.fixture(scope="session", autouse=True)
+async def another_comment_uid(prepare_pg_database, another_comment, registered_regular_user):
+    query = (
+        insert(CommentModel).values(**another_comment, created_by=registered_regular_user).returning(CommentModel.uid)
+    )
+    async with TestPostgresAdapter.get_session() as session:
+        comment_uid = await session.scalar(query)
+        await session.commit()
+    return str(comment_uid)
+
+
+@pytest_asyncio.fixture(scope="session", autouse=True)
+async def mutable_comment_uid(prepare_pg_database, mutable_comment, registered_regular_user):
+    query = (
+        insert(CommentModel).values(**mutable_comment, created_by=registered_regular_user).returning(CommentModel.uid)
+    )
+    async with TestPostgresAdapter.get_session() as session:
+        comment_uid = await session.scalar(query)
+        await session.commit()
+    return str(comment_uid)
 
 
 # Test Client

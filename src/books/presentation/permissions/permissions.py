@@ -18,5 +18,5 @@ def check_permissions_comment_is_author_or_admin(
     user: Annotated[DomainUser, Depends(get_current_user)],
     comment: Annotated[DomainComment, Depends(get_current_comment)],
 ):
-    if not user.is_superuser or comment.created_by == user.uid:
+    if not (user.is_superuser or comment.created_by == user.uid):
         raise NotPermissionsException

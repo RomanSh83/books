@@ -12,7 +12,7 @@ class CommentsDBProtocol(Protocol):
     async def create_comment(self, comment: DomainComment, created_by: uuid.UUID, book_uid: uuid.UUID) -> DomainComment:
         raise NotImplementedError
 
-    async def get_comment_by_uid(self, comment_uid: uuid.UUID) -> DomainComment | None:
+    async def get_books_comment_by_uid(self, book_uid: uuid.UUID, comment_uid: uuid.UUID) -> DomainComment | None:
         raise NotImplementedError
 
     async def update_comment(self, comment: DomainComment, update_data: dict, updated_by: uuid.UUID) -> None:
